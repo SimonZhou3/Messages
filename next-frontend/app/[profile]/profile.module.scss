@@ -1,0 +1,122 @@
+.profile-container {
+  padding: 20px 15%;
+  color: #626262;
+}
+
+.cover-image {
+  width: 100%;
+  border-radius: 10px;
+  margin-bottom: 14px;
+  height: 250px;
+  object-fit: cover;
+}
+
+.profile-details {
+  padding: 20px;
+  background: var(--bg-light-color);
+  border-radius: 6px;
+  display:flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  box-shadow: 0 8px 10px 2px var(--bg-light-color);
+}
+
+.profile-detail-row {
+  display: flex;
+  align-items: flex-start;
+}
+
+.profile-detail-row div h3 {
+  font-size: 25px;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.profile-detail-row div p {
+  font-size: 13px;
+  color:  var(--text-color);
+}
+
+.profile-details-right button {
+  border: 0;
+  outline: 0;
+  padding: 6px 10px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 20px;
+  margin-left: 10px;
+  cursor: pointer;
+  font-size: 14px;
+}
+.profile-details-right svg {
+  margin-right: 4px;
+}
+
+.profile-info {
+  display: flex;
+  align-self: flex-start;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.profile-intro {
+  background: var(--bg-light-color);
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+  color: var(--text-color);
+}
+
+.info-col {
+  flex-basis: 33%;
+}
+
+.post-col {
+  flex-basis: 65%;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.title a {
+  text-decoration: none;
+  color: var(--text-color);
+  font-size: 15px;
+
+  .title a:hover {
+
+  }
+}
+
+.friend-box {
+  display: flex;
+  margin-top: 10px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.friend-box div img svg {
+  width: 100%;
+  cursor: pointer;
+}
+
+.friend-container {
+  margin-left: 5px;
+  color: var(--text-color);
+  text-decoration: none;
+}
+.cover-photo-button {
+  position:absolute;
+  transform: translate(-140%, 30%);
+  border-radius: 50% 50% 50% 50%;
+  height: 50px;
+  width: 50px;
+  border: 0.5px solid black;
+}
+
+.cover-photo-button:active {
+  filter: brightness(0.8);
+}

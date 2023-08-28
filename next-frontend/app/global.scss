@@ -1,0 +1,215 @@
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--bg-color);
+  font-family: 'Roboto', sans-serif;
+
+}
+
+*::-webkit-scrollbar {
+  width: 0.5vw;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--scroll-color);
+  border-radius: 20px;
+
+}
+
+*::-webkit-scrollbar-track {
+  background-color: var(--scroll-track-color);
+}
+
+*::-webkit-scrollbar-thumb:active {
+  background-color: var(--scroll-track-color-active);
+}
+
+.app-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+// light mode
+[data-theme="light"] {
+  --bg-color:  #FFFFFF;
+  --bg-light-color: #F0F0F0;
+  --bg-hover-color: #546f7d;
+  --text-color: #222222;
+  --login-bg-color:  #1A2226;
+  --scroll-color: #445a64;
+  --scroll-track-color: #2B393F;
+  --scroll-track-color-active: #55717E;
+  --bubble-self: green;
+  --bubble-others: #bfbfbf;
+  --line-color: #222222;
+  animation: .3s ease-in-out;
+}
+
+[data-theme="dark"] {
+  --nav-height: 65px;
+  /*--bg-color:  #222D32;*/
+  /*--bg-light-color: #2c3a41;*/
+  /*--bg-hover-color: #546f7d;*/
+  --bg-color:  #121212;
+  --bg-light-color: #1F1A24;
+  --bg-hover-color: #546f7d;
+  --text-color: #ECF0F5;
+  --login-bg-color:  #1A2226;
+  --scroll-color: #1c1720;
+  --scroll-track-color: #302938;
+  --scroll-track-color-active: #55717E;
+  --bubble-self: green;
+  --bubble-others: grey;
+  --line-color: #4B3F58;
+  animation: .3s ease-in-out;
+}
+
+#authentication-form input:focus {
+  outline: none;
+  box-shadow: 0 0 0;
+  background: transparent;
+}
+
+#authentication-form label {
+  margin-bottom: 0px;
+}
+
+#authentication-form input[type=password] {
+  background-color:  var(--bg-light-color);
+  border: none;
+  border-bottom: 2px solid #0DB8DE;
+  border-top: 0px;
+  border-radius: 0px;
+  font-weight: bold;
+  outline: 0;
+  padding-left: 0px;
+  margin-bottom: 20px;
+  color: var(--text-color);
+  margin-top: 15px;
+}
+
+#authentication-form input[type=password]:focus {
+  background-color:  var(--bg-light-color);
+  border: none;
+  border-bottom: 2px solid #0DB8DE;
+  border-top: 0px;
+  border-radius: 0px;
+  font-weight: bold;
+  outline: 0;
+  padding-left: 0px;
+  margin-bottom: 20px;
+  color: var(--text-color);
+  margin-top: 15px;
+}
+
+#signup-form, #authentication-form input[type=text] {
+  background-color: var(--bg-light-color);
+  border: none;
+  border-bottom: 2px solid #0DB8DE;
+  border-top: 0px;
+  border-radius: 0px;
+  font-weight: bold;
+  outline: 0;
+  margin-bottom: 20px;
+  padding-left: 0px;
+  color: var(--text-color);
+  margin-top: 15px;
+}
+
+#authentication-form input[type=text]:focus {
+  background-color:  var(--bg-light-color);
+  border: none;
+  border-bottom: 2px solid #0DB8DE;
+  border-top: 0px;
+  border-radius: 0px;
+  font-weight: bold;
+  outline: 0;
+  margin-bottom: 20px;
+  padding-left: 0px;
+  color: var(--text-color);
+  margin-top: 15px;
+}
+
+em-emoji-picker {
+  --background-rgb: 85, 170, 255;
+  --border-radius: 24px;
+  --category-icon-size: 24px;
+  --color-border-over: rgba(0, 0, 0, 0.1);
+  --color-border: rgba(0, 0, 0, 0.05);
+  --font-family: 'Comic Sans MS', 'Chalkboard SE', cursive;
+  --font-size: 20px;
+  --rgb-accent: 53, 81, 150;
+  --rgb-background: rgb(44, 58, 65);
+  --rgb-color: var(--text-color);
+  --rgb-input: 255, 235, 235;
+  --shadow: 5px 5px 15px -8px black;
+
+  height: 50vh;
+  min-height: 400px;
+  max-height: 800px;
+  position: absolute;
+  transform: translate(0,-53vh);
+  background: var(--bg-light-color);
+}
+
+@media screen and (max-height: 750px){
+
+  em-emoji-picker {
+    display: none;
+  }
+}
+
+.avatar-icon-hover {
+  &:hover {
+    filter: brightness(0.8);
+    cursor: pointer
+  }
+}
+
+.avatar-icon-extra-small {
+  width: 30px !important;
+  height: 30px !important;
+}
+
+.avatar-icon-small {
+  width: 40px !important;
+  height: 40px !important;
+}
+
+.avatar-icon-medium {
+  width: 120px !important;
+  height: 120px !important;
+}
+
+.avatar-icon-large {
+  width: 150px !important;
+  height: 150px !important;
+}
+
+.avatar-icon-display {
+  width: 100px !important;
+  height: 100px !important;
+}
+
+.avatar-icon-message {
+  width: 70px !important;
+  height: 70px !important;
+}
+
+.avatar-circular-img {
+  border-radius: 50% 50% 50% 50%;
+  height: 100%;
+}
+.avatar-square-img {
+  height: 100%;
+  border-radius: 5px;
+}
+
+.avatar-profile-outline {
+  border: 5px solid var(--bg-color);
+}
