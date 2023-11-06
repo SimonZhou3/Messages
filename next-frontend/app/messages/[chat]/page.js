@@ -15,10 +15,10 @@ import {useRouter, usePathname} from "next/navigation";
 import {getUser} from "../../../middleware/Authenticator";
 import Loading from "../../loading";
 import Image from "next/image";
+import Link from "next/link";
 
 
-
-export default function Chat(props) {
+export default function Chat() {
 
     const {user, isLoading, isError} = getUser();
 
@@ -28,6 +28,7 @@ export default function Chat(props) {
         useRouter().push('/login');
     } else {
 
+        const [loading, setLoading] = useState(true);
         const [toggleEmoji, setToggleEmoji] = useState(false);
         const [previousMessages, setPreviousMessages] = useState([]);
         const [message, setMessage] = useState('');
@@ -37,9 +38,9 @@ export default function Chat(props) {
         const [chatroomId, setChatroomId] = useState('');
         const [messageLimit, setMessageLimit] = useState(1);
         const [initialScrollHeight, setInitialScrollHeight] = useState(0);
-        const [scrollHeight, setScrollHeight] = useState(0);
         const [isMaxMessages, setIsMaxMessages] = useState(false);
-        const [update, setUpdate] = useState(false)
+        const [update, setUpdate] = useState(false);
+        const [messageSent, setMessageSent] = useState(false);
         const [avatar, setAvatar] = useState('');
         const [chatName, setChatName] = useState('');
         const [images, setImages] = useState([]);
@@ -47,6 +48,7 @@ export default function Chat(props) {
         const [textHasChanged, setTextHasChanged] = useState(false)
         const location = usePathname().split('/');
         const chatId = location[location.length - 1];
+        const navigate = useRouter();
 
 
         const messageRef = useRef(null);
@@ -57,7 +59,7 @@ export default function Chat(props) {
                 return (
                     <div>
                         <Image src={item} className={styles["textarea-input-image"]} width={48} height={48} alt={item}/>
-                            <RemoveCircleRoundedIcon className={styles["image-removal-button"]}/>
+                        <RemoveCircleRoundedIcon className={styles["image-removal-button"]}/>
                     </div>
                 )
             })
@@ -102,10 +104,14 @@ export default function Chat(props) {
 
         useEffect(() => {
             socket.current.on("getMessage", () => {
-                console.log('we test those')
                 setUpdate(!update)
             })
         })
+
+        useEffect(() => {
+            const container = messageRef.current;
+            container.scrollTop = container.scrollHeight;
+        }, [messageSent])
 
         const handleUpdateScrollMessage = (event) => {
             if (event.currentTarget.scrollTop <= 0 && !isMaxMessages) {
@@ -135,6 +141,7 @@ export default function Chat(props) {
                     setAvatar(response.chat_metadata.chat_photo);
                     setChatName(response.chat_metadata.chat_name);
                 }
+                setLoading(false);
             })
             const input = document.querySelector("textarea")
             input.focus()
@@ -174,18 +181,31 @@ export default function Chat(props) {
                     text: message,
                     images: images
                 }
-                await sendMessage(messageData)
-                const emitMessage = {
-                    chatroomId: chatroomId,
-                    self: selfId,
-                    text: message,
-                    images: images,
-                    users: chatroomUsers,
+                try {
+                    await sendMessage(messageData)
+                    const emitMessage = {
+                        chatroomId: chatroomId,
+                        self: selfId,
+                        text: message,
+                        images: images,
+                        users: chatroomUsers,
+                    }
+                    socket.current.emit("sendMessage", emitMessage)
+                    setMessage('')
+                    e.target.value = '';
+                    const message_copy = {
+                        chatChatId: chatroomId,
+                        created_at: new Date(),
+                        images: images ?? [],
+                        message: message,
+                        userUserId: selfId,
+                        seen: false,
+                    }
+                    setMessageSent(!messageSent)
+                    setPreviousMessages([...previousMessages, message_copy]);
+                } catch (err) {
+                    console.log(err)
                 }
-                socket.current.emit("sendMessage", emitMessage)
-                setMessage('')
-                e.target.value = '';
-                setUpdate(!update)
             }
         }
 
@@ -216,7 +236,9 @@ export default function Chat(props) {
                         previousMessage = item
                         stack.push(
                             <Tooltip title={formatTimeStamp(item.created_at)} placement="left" key={item.message_id}
-                                     followCursor={true}>
+                                     followCursor={true}
+                                     enterDelay={600}
+                            >
                                 <div className={styles["chat-bubble-self"]} key={item.created_at}>
                                     {item.message}
                                 </div>
@@ -227,14 +249,19 @@ export default function Chat(props) {
                         stack.push(
                             <div className={styles["chat-bubble-other-container"]} key={item.message_id}>
                                 <div className={styles["chat-bubble-other-avatar"]}>
-                                    <Avatar
-                                        src={item.avatar}
-                                        className={"avatar-icon-extra-small"}
-                                        imgProps={{"className": "avatar-square-img"}}
-                                        variant="round"
-                                    />
+                                    <Link href={`/${item.username}`}>
+                                        <Avatar
+                                            src={item.avatar}
+                                            className={"avatar-icon-extra-small"}
+                                            imgProps={{"className": "avatar-square-img"}}
+                                            variant="round"
+                                        />
+                                    </Link>
                                 </div>
-                                <Tooltip title={formatTimeStamp(item.created_at)} placement="right" followCursor={true}>
+                                <Tooltip title={formatTimeStamp(item.created_at)} placement="right" followCursor={true}
+                                         enterDelay={700}
+                                         enterDelay={600}
+                                >
                                     <div className={styles["chat-bubble-other"]}>
                                         {item.message}
                                     </div>
@@ -244,8 +271,8 @@ export default function Chat(props) {
                     }
                 })
                 return stack;
-            } else {
-                return (<Loading/>)
+            } else if (!loading) {
+                return (<div className={"justify-content-center p-2 text-center"}> Start the Conversation! </div>)
             }
         }
 

@@ -108,6 +108,7 @@
   background: var(--bg-light-color);
   text-align: center;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  border-radius: 5px;
 }
 
 .login-key {
@@ -262,4 +263,18 @@
   font-size: 12px;
   line-height: 15px;
   margin: 5px 0 0;
+}
+
+.text-subheader {
+  font-size: 12px;
+  color: var(--text-color);
+
+  &:hover {
+    text-decoration: none;
+    cursor: pointer;
+  }
+}
+
+.text-bottom-header {
+  color: var(--text-color);
 }

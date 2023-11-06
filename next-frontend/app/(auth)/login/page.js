@@ -2,6 +2,7 @@
 
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faFacebook, faGoogle} from '@fortawesome/free-brands-svg-icons';
+import {useRouter} from "next/navigation";
 import styles from './login.module.scss';
 import '../../global.scss';
 import {logIn} from "../../../middleware/Authenticator";
@@ -12,6 +13,8 @@ function Login() {
     const [formValues, setFormValues] = useState(initialValues)
     const [formErrors, setFormErrors] = useState({})
     const [isSubmit, setIsSubmit] = useState(false)
+
+    const router = useRouter();
 
     const handleChange = (e) => {
         const {name, value} = e.target
@@ -89,8 +92,11 @@ function Login() {
                                     </div>
                                 </form>
                                 <div className="text-center">
-                                    <p className="text-white">
-                                        or <a> Log in here </a>
+                                    <p className={styles["text-bottom-header"]}>
+                                        or <a> log in here </a>
+                                    </p>
+                                    <p className={styles["text-subheader"]} onClick={() => {router.push('/register')}}>
+                                        Don't have an account? Sign up
                                     </p>
                                 </div>
                                 <div

@@ -37,15 +37,16 @@ export class AppController {
   @Post('/chat')
   @UseGuards(AuthenticatedGuard)
   async createChat(@Request() req, @Body() users: User[]) {
-    return await this.usersService.createChat([...users, req.user])
+    return await this.usersService.identifyAndCreateChat(req.user, users)
   }
 
   @Post('/friends/add')
   @UseGuards(AuthenticatedGuard)
-  async addFriend(@Request() req, @Response() res, @Body() user: User) {
+  async addFriend(@Request() req, @Body() user: User) {
     Logger.log('Added friends')
     const self_user = req.user;
-    await this.usersService.addFriend(self_user, user)
+    return await this.usersService.addFriend(self_user, user)
+
   }
 
   @Post('/message')
