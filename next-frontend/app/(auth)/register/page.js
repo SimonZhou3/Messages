@@ -3,6 +3,7 @@
 import {signUp} from "../../../middleware/Authenticator"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faFacebook, faGoogle} from "@fortawesome/free-brands-svg-icons";
+import {useRouter} from "next/navigation";
 import {useState} from "react";
 import styles from "../login/login.module.scss";
 
@@ -10,6 +11,7 @@ function App() {
     const initialValues = {email: "", password: "", firstName: "", lastName: ""};
     const [formValues, setFormValues] = useState(initialValues)
     const [formErrors, setFormErrors] = useState({})
+    const router = useRouter();
 
 
     const handleChange = (e) => {
@@ -118,8 +120,11 @@ function App() {
                                     </div>
                                 </form>
                                 <div className="text-center">
-                                    <p className="text-white">
+                                    <p className={styles["text-bottom-header"]}>
                                         or <a> sign up here </a>
+                                    </p>
+                                    <p className={styles["text-subheader"]} onClick={() => {router.push('/login')}}>
+                                        Have an account? Log in
                                     </p>
                                 </div>
                                 <div

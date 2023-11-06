@@ -46,3 +46,17 @@ export async function getMessages(chatId, limit) {
     })
     return (await response.json());
 }
+
+export async function createChatroom(participants) {
+    const response = await fetch(`https://localhost:8000/chat`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(participants)
+    });
+
+    return await (response.json());
+}

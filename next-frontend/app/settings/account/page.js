@@ -1,11 +1,11 @@
 "use client";
 import styles from '../settings.module.scss';
-import avatarStyles from '../../../components/avatar.scss';
 import {Tooltip, Avatar, Snackbar, Alert} from "@mui/material";
 import {useEffect, useState} from "react";
 import CropModal from "../../../components/cropmodal.js";
 import "/middleware/CropImage";
 import {retrieveUserData, updateUserInformation, getUser} from "../../../middleware/Authenticator";
+import {getCroppedImg} from '../../../middleware/CropImage';
 import {ref, uploadString, getDownloadURL} from 'firebase/storage';
 import {storage} from "/middleware/firebase"
 import Loading from "../../loading";

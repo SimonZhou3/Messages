@@ -34,13 +34,13 @@ export default function MessagesLayout({children, params}) {
 
     useEffect(() => {
             socket.current.on("updateMessageBar", (data) => {
-                console.log('we receive a Notification in this component: layout Messages!');
                 setUpdateRecent(!updateRecent);
             })
     })
 
     useEffect(() => {
         getChats().then((result) => {
+            console.log(result)
             setChat(result)
         })
     }, [updateRecent]);
@@ -98,7 +98,6 @@ export default function MessagesLayout({children, params}) {
     } else {
 
         if (user) {
-            console.log('we enter here ')
             socket.current.emit("connectUser", user.user_id);
         }
 

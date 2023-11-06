@@ -211,12 +211,16 @@ export class UsersService {
                 .getOne();
 
             if (chat.chat_type === 'private') {
-                const private_metadata = await this.userRepository
-                    .createQueryBuilder('u')
+
+                const private_metadata = await this.chatRepository
+                    .createQueryBuilder('c')
                     .select(['u.first_name as first_name', 'u.user_id as user_id', 'u.last_name as last_name', 'um.avatar as avatar'])
-                    .leftJoin('user_metadata', 'um', 'u.user_id = um.user.user_id')
-                    .where('u.user_id <> :user_id', {user_id: user.user_id})
+                    .innerJoin('c.users', 'u')
+                    .innerJoin('user_metadata', 'um', 'u.user_id = um.user.user_id')
+                    .where('c.chat_id = :chat_id', {chat_id: chat.chat_id})
+                    .andWhere('u.user_id <> :self_id', {self_id: user.user_id})
                     .getRawOne();
+
                 chat_metadata.push({chat, recent_message, private_metadata})
             } else {
                 chat_metadata.push({chat, recent_message})
@@ -235,22 +239,46 @@ export class UsersService {
         self_contact.user = self_user;
         self_contact.contact_user = user;
         await this.contactRepository.save(self_contact);
+
         const other_contact: Contact = new Contact();
         other_contact.user = user;
         other_contact.contact_user = self_user;
         await this.contactRepository.save(other_contact);
     }
 
-    async createChat(users: User[]): Promise<any> {
-        if (users.length > 0) {
-            const chat: Chat = new Chat()
-            chat.chat_name = this.generateChatName(users);
-            chat.users = users;
-            chat.chat_type = users.length <= 2 ? Chat_Type.PRIVATE : Chat_Type.GROUP;
-            return await this.chatRepository.save(chat);
+    async identifyAndCreateChat(self: User, users: User[]): Promise<any> {
+
+        if (users.length > 1) {
+            console.log(users);
+          return {
+              redirect: (await this.createChat(Chat_Type.GROUP, [self, ...users])).chat_id
+          }
+        } else if (users.length === 1) {
+            let currentChat = await this.chatRepository
+                .createQueryBuilder('c')
+                .innerJoin("c.users", "user1", "user1.user_id = :userId1", { userId1: self.user_id })
+                .innerJoin("c.users", "user2", "user2.user_id = :userId2", { userId2: users[0].user_id })
+                .where("c.chat_type = :chatType", { chatType: Chat_Type.PRIVATE })
+                .andWhere("user1.user_id = :userId1", { userId1: self.user_id })
+                .andWhere("user2.user_id = :userId2", { userId2: users[0].user_id })
+                .getOne();
+            if (!currentChat) {
+                await this.createChat(Chat_Type.PRIVATE, [self,...users])
+            }
+            return {
+                redirect: users[0].user_id
+            }
         } else {
-            throw new HttpException('Cannot create Chat with 1 user', HttpStatus.NOT_ACCEPTABLE);
+            throw new HttpException('No Users were indicated', HttpStatus.NOT_ACCEPTABLE);
         }
+    }
+
+    async createChat(chat_type:Chat_Type, users: User[]) {
+        const chat: Chat = new Chat()
+        chat.chat_name = this.generateChatName(users);
+        chat.users = users;
+        chat.chat_type = chat_type;
+        return await this.chatRepository.save(chat);
     }
 
     generateChatName(users: User[]): string {
@@ -333,7 +361,7 @@ export class UsersService {
         if (chat_metadata) {
             const messages = await this.messagesRepository
                 .createQueryBuilder('m')
-                .select(['m.*', 'um.avatar AS avatar'])
+                .select(['m.*', 'um.avatar AS avatar', 'um.username AS username'])
                 .leftJoin('m.user', 'u')
                 .leftJoin('user_metadata', 'um', 'u.user_id = um.user.user_id')
                 .where('m.chat.chat_id = :chat_id', { chat_id: chat_metadata.chat_id })
